@@ -3,8 +3,8 @@
         "autobattle": true,
         "beep": false,
         "bossprot": false,
-        "delayfrom": 668,
-        "delayto": 541,
+        "delayfrom": 1000,
+        "delayto": 2000,
         "highspeed": false,
         "list": [
             {
@@ -28,7 +28,7 @@
         "lv1prot": false,
         "pet2action": false,
         "r1nodelay": true,
-        "waitafterbattle": false
+        "waitafterbattle": true
     },
     "chat": {
     },
