@@ -16,7 +16,7 @@ declare module cga {
     avatar_id: 38000,
     image_id: 100051,
     unitid: 20559,
-    petid: 0,
+    petid: 0, // -1代表没有作战宠，0代表第1只宠
     direction: 6,
     battle_position: 0,
     punchclock: 0,
@@ -180,7 +180,16 @@ declare module cga {
     message: '\n\n　喔喔！异界来的客人啊！欢迎你。请告诉我，你是　『开启者』吗？'
   }
 
+  type PetState =
+    | 1 // 待命
+    | 2 // 战斗
+    | 3 // 休息
+    | 16 // 宠物散步
+
   const GetPlayerInfo: () => PlayerInfo
+  const GetPetInfo: (petId: number) => PetInfo
+
+  const ChangePetState: (pos: number, state: PetState) => void
 
   const loadPlayerConfig: () => PlayerConfig
 
