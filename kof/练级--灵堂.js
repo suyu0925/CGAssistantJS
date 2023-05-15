@@ -2,8 +2,8 @@ require(process.env.CGA_DIR_PATH_UTF8 + '/kof/common').then(async () => {
   // await kof.travel.falan.toCastle()
   // TODO: 有队长就不要直接登出
 
-  // 从法兰城南门开始
   await kof.walkList([
+    ['法兰城'],
     [153, 100, '里谢里雅堡'],
     [47, 85, '召唤之间'],
     [27, 8, '回廊'],

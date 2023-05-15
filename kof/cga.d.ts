@@ -89,6 +89,9 @@ declare module cga {
     }
   }
 
+  type PetInfo = {
+    // TODO:
+  }
 
   type MapName = string // '法兰城'
 
@@ -125,7 +128,7 @@ declare module cga {
     ypos: number // 33
     item_count: number // 0
     injury: number // 0,
-    icon: nuimber // 0,
+    icon: number // 0,
     level: number // 1,
     flags: number // 4096,
     unit_name: string // '资深护士菲儿',
@@ -173,11 +176,11 @@ declare module cga {
   }
 
   type Dialog = {
-    type: 0,
-    options: 12,
-    dialog_id: 326,
-    npc_id: 8230,
-    message: '\n\n　喔喔！异界来的客人啊！欢迎你。请告诉我，你是　『开启者』吗？'
+    type: number // 0,
+    options: number // 12,
+    dialog_id: number // 326,
+    npc_id: number // 8230,
+    message: string // '\n\n　喔喔！异界来的客人啊！欢迎你。请告诉我，你是　『开启者』吗？'
   }
 
   type PetState =
@@ -200,7 +203,7 @@ declare module cga {
 
   const GetMapUnits: () => Unit[]
 
-  const findNPCEx: (filter: ((u: Unit) => bool)) => NPCInfo | null
+  const findNPCEx: (filter: ((u: Unit) => boolean)) => NPCInfo | null
   const findNPC: (name: string) => NPCInfo | null
   const findNPCByPosition: (name: string, x: number, y: number) => NPCInfo | null
 
