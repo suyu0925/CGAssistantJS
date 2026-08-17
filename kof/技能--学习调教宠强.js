@@ -26,8 +26,11 @@ var cga = require(process.env.CGA_DIR_PATH_UTF8 + '/cgaapi')(() => {
           cga.ClickNPCDialog(0, 0); // 选择第一个选项：学习技能
           cga.AsyncWaitNPCDialog(() => {
             cga.ClickNPCDialog(0, -1); // 选择左边的确定按钮
-            console.log('学会调教。')
-            cb()
+            cga.AsyncWaitNPCDialog(() => {
+              cga.ClickNPCDialog(1, 0) // 点击：确定
+              console.log('学会调教。')
+              cb()
+            })
           })
         })
       })
@@ -59,8 +62,11 @@ var cga = require(process.env.CGA_DIR_PATH_UTF8 + '/cgaapi')(() => {
           cga.ClickNPCDialog(0, 0); // 选择第一个选项：学习技能
           cga.AsyncWaitNPCDialog(() => {
             cga.ClickNPCDialog(0, -1); // 选择左边的确定按钮
-            console.log('学会宠物强化。')
-            cb()
+            cga.AsyncWaitNPCDialog(() => {
+              cga.ClickNPCDialog(1, 0) // 点击：确定
+              console.log('学会调教。')
+              cb()
+            })
           })
         })
       })

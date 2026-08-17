@@ -5,6 +5,7 @@ require(process.env.CGA_DIR_PATH_UTF8 + '/kof/common').then(async () => {
     await kof.talkToNPC('王宫召唤士盖兹')
 
     let dlg = await kof.waitNPCDialog()
+    console.log('1')
     console.log(dlg)
     // {
     //   type: 0,
@@ -20,6 +21,7 @@ require(process.env.CGA_DIR_PATH_UTF8 + '/kof/common').then(async () => {
     cga.ClickNPCDialog(4, -1) // 点击：是
 
     dlg = await kof.waitNPCDialog()
+    console.log('2')
     console.log(dlg)
     // {
     //   type: 0,
@@ -31,6 +33,7 @@ require(process.env.CGA_DIR_PATH_UTF8 + '/kof/common').then(async () => {
     cga.ClickNPCDialog(32, 0) // 点击：下一步
 
     dlg = await kof.waitNPCDialog()
+    console.log('3')
     console.log(dlg)
     // {
     //   type: 0,
@@ -43,49 +46,57 @@ require(process.env.CGA_DIR_PATH_UTF8 + '/kof/common').then(async () => {
     // }
     cga.ClickNPCDialog(1, 0) // 点击：确定
 
-    dlg = await kof.waitNPCDialog()
-    console.log(dlg)
-    // {
-    //   type: 0,
-    //   options: 32,
-    //   dialog_id: 326,
-    //   npc_id: 8232,
-    //   message: '\n\n　我为你准备了两条考验之路。\n　其中一条相当艰险，另一条则路途较长。\n　想走哪一条路，全由你来决定。'
-    // }  
-    cga.ClickNPCDialog(32, 0) // 点击：下一步
+    try {
+      dlg = await kof.waitNPCDialog()
+      console.log(dlg)
+      // {
+      //   type: 0,
+      //   options: 32,
+      //   dialog_id: 326,
+      //   npc_id: 8232,
+      //   message: '\n\n　我为你准备了两条考验之路。\n　其中一条相当艰险，另一条则路途较长。\n　想走哪一条路，全由你来决定。'
+      // }  
+      cga.ClickNPCDialog(32, 0) // 点击：下一步
 
-    dlg = await kof.waitNPCDialog()
-    console.log(dlg)
-    // {
-    //   type: 0,
-    //   options: 12,
-    //   dialog_id: 326,
-    //   npc_id: 8232,
-    //   message: '\n\n　如果你想走艰险的道路，请回答「是」\n　想走路程较远的道路，请回答「否」。'
-    // }
-    cga.ClickNPCDialog(4, -1) // 点击：是
+      dlg = await kof.waitNPCDialog()
+      console.log(dlg)
+      // {
+      //   type: 0,
+      //   options: 12,
+      //   dialog_id: 326,
+      //   npc_id: 8232,
+      //   message: '\n\n　如果你想走艰险的道路，请回答「是」\n　想走路程较远的道路，请回答「否」。'
+      // }
+      cga.ClickNPCDialog(4, -1) // 点击：是
 
-    dlg = await kof.waitNPCDialog()
-    console.log(dlg)
-    // {
-    //   type: 0,
-    //   options: 32,
-    //   dialog_id: 326,
-    //   npc_id: 8232,
-    //   message: '\n\n　在这个『召唤之间』的地下灵堂里，有个测试勇者　的道具，叫做『死者的戒指』。请你把它找出来后　再回来找我好吗？'
-    // }
-    cga.ClickNPCDialog(32, 0) // 点击：下一步
+      dlg = await kof.waitNPCDialog()
+      console.log(dlg)
+      // {
+      //   type: 0,
+      //   options: 32,
+      //   dialog_id: 326,
+      //   npc_id: 8232,
+      //   message: '\n\n　在这个『召唤之间』的地下灵堂里，有个测试勇者　的道具，叫做『死者的戒指』。请你把它找出来后　再回来找我好吗？'
+      // }
+      cga.ClickNPCDialog(32, 0) // 点击：下一步
 
-    dlg = await kof.waitNPCDialog()
-    console.log(dlg)
-    // {
-    //   type: 0,
-    //   options: 1,
-    //   dialog_id: 326,
-    //   npc_id: 8232,
-    //   message: '\n\n　只要看到那个戒指，我就可以判断你是不是『开启　者』了。'
-    // }
-    cga.ClickNPCDialog(1, 0) // 点击：确定
+      dlg = await kof.waitNPCDialog()
+      console.log(dlg)
+      // {
+      //   type: 0,
+      //   options: 1,
+      //   dialog_id: 326,
+      //   npc_id: 8232,
+      //   message: '\n\n　只要看到那个戒指，我就可以判断你是不是『开启　者』了。'
+      // }
+      cga.ClickNPCDialog(1, 0) // 点击：确定
+    } catch (e) {
+      console.log(e)
+      // 自己走去回廊
+      await kof.walkList([
+        [27, 8, '回廊'],
+      ])
+    }
 
     await cga.delay(1000) // 会被传送到回廊
   }

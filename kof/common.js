@@ -10,33 +10,50 @@ const isInEastHospital = () => {
   return mapIndex.index3 === 1112
 }
 
-const isNext = (a, b) => {
-  return (a.x === b.x && Math.abs(a.y - b.y) === 1)
-    || (a.y === b.y && Math.abs(a.x - b.x) === 1)
-}
-
 module.exports = new Promise(resolve => {
   const cga = require(process.env.CGA_DIR_PATH_UTF8 + '/cgaapi')(() => setTimeout(() => resolve(cga), 0));
 }).then(cga => {
   global.cga = cga
   global.kof = {
     isInBank,
+    log: console.log,
     logBack: util.promisify(cga.logBack),
     waitNPCDialog: util.promisify(cga.AsyncWaitNPCDialog),
     waitForNPC: util.promisify(cga.task.waitForNPC),
     getSettings: util.promisify(cga.gui.GetSettings),
     loadSettings: util.promisify(cga.gui.LoadSettings),
+    delay: cga.delay,
+    getTeamPlayers: cga.getTeamPlayers(),
+    getTeamPosition: () => {
+      const teamPlayers = cga.getTeamPlayers()
+      if (!teamPlayers || teamPlayers.length === 0) {
+        return 0
+      }
+      return teamPlayers.findIndex(p => p.name === cga.GetPlayerInfo().name)
+    }
   }
+
+  require('./sell')
+  require('./prepare')
+  require('./teamwork')
+  require('./move')
+  kof.item = require('./item')
+  kof.battle = require('./battle')
 
   kof.walkList = async (list) => {
     const curIndex = list
       .map((node, index) => {
-        if (node.length === 2) {
-          return [node[0], node[1], list[index - 1][2]]
+        if (node.length === 2 || node[2] == null) {
+          if (index === 0) {
+            return node
+          } else {
+            return [node[0], node[1], list[index - 1][2]]
+          }
         } else {
           return node
         }
-      }).findIndex(node => node[2] === cga.GetMapName())
+      })
+      .findIndex(node => node[2] === cga.GetMapName())
     const trimList = curIndex === -1
       ? list
       : list.slice(curIndex + 1)
@@ -54,6 +71,12 @@ module.exports = new Promise(resolve => {
       },
       toBank: util.promisify(cga.travel.falan.toBank),
       toCastle: util.promisify(cga.travel.falan.toCastle),
+      toMerchant: async () => {
+        if (cga.GetMapName() !== '法兰城') {
+          await kof.travel.falan.toStone('S')
+        }
+        await kof.walkList([[156, 123]])
+      }
     }
   }
 
@@ -65,41 +88,40 @@ module.exports = new Promise(resolve => {
     }
   }
 
-  kof.moveToNPC = async (npcName) => {
-    const npc = cga.findNPC(npcName)
-    if (!npc) {
-      throw new Error(`未找到NPC${npcName}`)
-    }
-    if (isNext(cga.GetMapXY(), { x: npc.xpos, y: npc.ypos })) {
-      return npc
-    }
-    // TODO: 需要判断是否可到达
-    await kof.walkList([[npc.xpos, npc.ypos + 1]])
-    return npc
+  // range 0 最大 1 最小格
+  kof.sayWords = (words = '', color = 0, range = 1, size = 1) => {
+    cga.SayWords(words, color, range, size)
   }
 
-  kof.talkToNPC = async (npcName) => {
-    const npc = await kof.moveToNPC(npcName)
-    cga.TurnTo(npc.xpos, npc.ypos)
+  // 防掉线，每分钟说一句话，返回一个dispose()函数，调用后取消
+  kof.keepAlive = () => {
+    const talk = () => {
+      kof.sayWords()
+    }
+    kof.log(`开启说话防掉线`)
+    const timeout = setTimeout(talk, 60 * 1000)
+    return () => {
+      clearTimeout(timeout)
+    }
   }
 
-  /**
-   * 是否需要补给
-   * @param {boolean} allPet 是否检查所有宠物
-   * @returns {boolean}
-   */
-  kof.needSupply = (allPet) => {
-    const playerInfo = cga.GetPlayerInfo()
-    const playerNeedSupply = playerInfo.hp < playerInfo.maxhp || playerInfo.mp < playerInfo.maxmp
-    const petIds = allPet ? [0, 1, 2, 3, 4] : [playerInfo.petid]
-    const petNeedSupply = petIds.some(petId => {
-      if (petId === -1) {
-        return false
-      }
-      const pet = cga.GetPetInfo(petId)
-      return pet.hp < pet.maxhp || pet.mp < pet.maxmp
+  kof.walkRandomMaze = async (target_map, filter) => {
+    return new Promise((resolve, reject) => {
+      cga.walkRandomMaze(target_map, () => {
+        resolve()
+      }, filter)
     })
-    return playerNeedSupply || petNeedSupply
+  }
+
+  kof.isBattleJob = () => {
+    const job = cga.GetPlayerInfo().job
+    if (job.includes('猎人')) {
+      return false
+    }
+    if (job.includes('弓箭手')) {
+      return true
+    }
+    return false
   }
 
   return cga

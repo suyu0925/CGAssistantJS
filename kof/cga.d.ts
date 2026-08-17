@@ -1,4 +1,6 @@
 declare module cga {
+  type Direction = 1 | 2 | 3 | 6 | 9 | 8 | 7 | 4
+
   type PlayerInfo = {
     hp: 205,
     maxhp: 205,
@@ -17,7 +19,7 @@ declare module cga {
     image_id: 100051,
     unitid: 20559,
     petid: 0, // -1代表没有作战宠，0代表第1只宠
-    direction: 6,
+    direction: Direction,
     battle_position: 0,
     punchclock: 0,
     usingpunchclock: false,
@@ -90,7 +92,50 @@ declare module cga {
   }
 
   type PetInfo = {
-    // TODO:
+    name: '',
+    realname: '使魔',
+    level: 22, // 等级，如果等级为0代表是一个空的宠物栏
+    race: 3,
+    loyality: 90,
+    skillslots: 9,
+    health: 100, // 受伤程度，0为健康
+    hp: 465,
+    maxhp: 465,
+    mp: 498,
+    maxmp: 498,
+    xp: 236055,
+    maxxp: 279841,
+    flags: 65537,
+    battle_flags: 2,
+    state: 0,
+    index: 0,
+    detail: {
+      points_remain: 0,
+      points_endurance: 25,
+      points_strength: 42,
+      points_defense: 15,
+      points_agility: 27,
+      points_magical: 28,
+      value_attack: 63,
+      value_defensive: 67,
+      value_agility: 92,
+      value_spirit: 110,
+      value_recovery: 111,
+      resist_poison: 0,
+      resist_sleep: 0,
+      resist_medusa: 0,
+      resist_drunk: 0,
+      resist_chaos: 0,
+      resist_forget: 0,
+      fix_critical: 0,
+      fix_strikeback: 0,
+      fix_accurancy: 0,
+      fix_dodge: 0,
+      element_earth: 0,
+      element_water: 0,
+      element_fire: 70,
+      element_wind: 30
+    }
   }
 
   type MapName = string // '法兰城'
@@ -209,6 +254,12 @@ declare module cga {
 
   const AsyncWaitNPCDialog: (cb: (err: Error | null, dlg: Dialog) => void) => void
   const ClickNPCDialog: (a: number, b: number) => void
+
+  // 移动
+  const ForceMove: (dir: Direction, visible: boolean) => void
+  const ForceMoveTo: (x: number, y: number, visible: boolean) => void
+
+  const findPlayerSkill: (skillName: string) => SkillInfo | null
 
   namespace gui {
     const GetSettings: () => GuiSetting
