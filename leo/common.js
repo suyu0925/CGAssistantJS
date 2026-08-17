@@ -1999,6 +1999,7 @@ module.exports = require('./wrapper').then( async (cga) => {
         //特定的迷宫：
         const mazeEntryOptions = [ 
             //[迷宫名字,爬楼方向,[1楼up,1楼down],[顶楼up,顶楼down],[中间楼up,中间楼down]]
+	    ['诅咒之迷宫',false,[0,13997],[13996,13996],[13996,13997]],//法兰城西门诅咒迷宫
             ['奇怪的洞窟',false,[0,12002],[12000,12000],[12000,12002]],//狗洞
             ['黑龙沼泽',false,[0,12002],[12000,0],[12000,12002]],//黑龙
             ['通往山顶的路',true,[13996,0],[0,13997],[13996,13997]],//半山
@@ -5115,11 +5116,13 @@ module.exports = require('./wrapper').then( async (cga) => {
             }
 
             //自动治疗自己
-            if(!cga.isInBattle() && leo.monitor.config.healSelf
-                && cga.GetPlayerInfo().health > 0){
-                var skill = cga.findPlayerSkill('治疗');
-                if(skill){
-                    leo.healSelf();
+            if(!cga.isInBattle() && leo.monitor.config.healSelf){
+                var playerInfo = cga.GetPlayerInfo();
+                if(playerInfo.health > 0){
+                    var skill = cga.findPlayerSkill('治疗');
+                    if(skill && playerInfo.mp >= skill.lv * 5 + 25){
+                        leo.healSelf();
+                    }
                 }
             }
 
